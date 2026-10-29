@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mensajes>
+    <mensaje>
+        <id>5bc14348-4a1a-420d-8bcc-a72178d7a4f7</id>
+        <emisor>Teo</emisor>
+        <destinatario>Isaac</destinatario>
+        <contenido>Hola , cuanto tienes ?</contenido>
+        <fecha>2026-10-29T12:29:58.409138</fecha>
+    </mensaje>
+    <mensaje>
+        <id>091681b1-707d-48c0-86d0-f8a31e1bc2e2</id>
+        <emisor>Isaac</emisor>
+        <destinatario>Teo</destinatario>
+        <contenido>Un 10</contenido>
+        <fecha>2026-10-29T12:30:28.536288</fecha>
+    </mensaje>
+</mensajes>
