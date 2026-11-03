@@ -6,10 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * Punto de entrada y menús de interacción por consola de la aplicación.
+ */
 public class Main {
     private static final Scanner teclado = new Scanner(System.in);
     private static final GestorChat chat = new GestorChat();
 
+    /**
+     * Inicia el menú principal y procesa las opciones seleccionadas.
+     *
+     * @param args argumentos de línea de comandos (no utilizados)
+     */
     public static void main(String[] args) {
         int opcionPrincipal = -1;
 
@@ -48,6 +56,9 @@ public class Main {
         teclado.close();
     }
 
+    /**
+     * Solicita un nombre y registra al usuario introducido por consola.
+     */
     private static void registrarUsuario() {
         System.out.print("\nIngrese el nombre del nuevo usuario: ");
         String nuevoUsuario = teclado.nextLine().trim();
@@ -63,6 +74,9 @@ public class Main {
         }
     }
 
+    /**
+     * Comprueba que el nombre esté registrado y abre el menú correspondiente.
+     */
     private static void iniciarSesion() {
         System.out.print("\nIngrese su nombre de usuario: ");
         String usuarioActivo = teclado.nextLine().trim();
@@ -82,6 +96,11 @@ public class Main {
         }
     }
 
+    /**
+     * Muestra y procesa las opciones disponibles para el usuario activo.
+     *
+     * @param usuarioActivo nombre del usuario que ha iniciado sesión
+     */
     private static void mostrarSubmenuUsuario(String usuarioActivo) {
         int opcionSubmenu = -1;
 

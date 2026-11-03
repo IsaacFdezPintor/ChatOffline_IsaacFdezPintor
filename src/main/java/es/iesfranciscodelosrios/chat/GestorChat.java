@@ -14,10 +14,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Coordina las operaciones de usuarios, mensajes y conversaciones del chat.
+ */
 public class GestorChat {
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private final GestorXML gestorXML = new GestorXML();
 
+    /**
+     * Registra un usuario si todavía no existe y persiste la lista actualizada.
+     *
+     * @param nombre nombre del usuario que se desea registrar
+     * @throws JAXBException si se produce un error al leer o guardar los usuarios
+     */
     public void registrarUsuario(String nombre) throws JAXBException {
         ListaUsuarios usuarios = gestorXML.leerUsuarios();
         for (Usuario usuario : usuarios.getUsuarios()) {
@@ -32,6 +41,13 @@ public class GestorChat {
         System.out.println("El usuario '" + nombre + "' se ha registrado con éxito.");
     }
 
+    /**
+     * Comprueba si existe un usuario registrado con el nombre indicado.
+     *
+     * @param nombre nombre que se desea buscar
+     * @return {@code true} si el usuario está registrado; {@code false} en caso contrario
+     * @throws JAXBException si se produce un error al leer los usuarios
+     */
     public boolean estaRegistrado(String nombre) throws JAXBException {
         if (nombre == null || nombre.isBlank()) {
             return false;
@@ -50,6 +66,16 @@ public class GestorChat {
         return false;
     }
 
+    /**
+     * Crea y guarda un mensaje entre dos usuarios registrados.
+     *
+     * @param emisor nombre del usuario que envía el mensaje
+     * @param destinatario nombre del usuario que recibe el mensaje
+     * @param contenido texto del mensaje
+     * @return el mensaje creado y persistido
+     * @throws JAXBException si se produce un error al leer o guardar los mensajes
+     * @throws IllegalArgumentException si alguno de los usuarios no está registrado o el mensaje está vacío
+     */
     public Mensaje enviarMensaje(String emisor, String destinatario, String contenido) throws JAXBException {
         if (!estaRegistrado(emisor) || !estaRegistrado(destinatario)){
             throw new IllegalArgumentException("El emisor y el destinatario deben estar registrados.");
@@ -67,6 +93,14 @@ public class GestorChat {
         return nuevoMensaje;
     }
 
+    /**
+     * Obtiene los mensajes intercambiados entre dos usuarios, en cualquiera de los sentidos.
+     *
+     * @param usuarioA primer usuario de la conversación
+     * @param usuarioB segundo usuario de la conversación
+     * @return lista de mensajes de la conversación, o {@code null} si algún nombre o dato de mensaje es nulo
+     * @throws JAXBException si se produce un error al leer los mensajes
+     */
     public List<Mensaje>consultarConversacion(String usuarioA, String usuarioB) throws JAXBException {
         List<Mensaje> conversacion = new ArrayList<>();
         for (Mensaje mensaje : gestorXML.leerMensajes().getMensajes()) {
@@ -82,6 +116,14 @@ public class GestorChat {
         return conversacion;
     }
 
+    /**
+     * Cuenta cuántos mensajes de la conversación ha enviado cada usuario.
+     *
+     * @param usuarioA primer usuario de la conversación
+     * @param usuarioB segundo usuario de la conversación
+     * @return mapa con cada emisor y el número de mensajes enviados
+     * @throws JAXBException si se produce un error al leer los mensajes
+     */
     public Map<String, Long> estadisticas(String usuarioA, String usuarioB) throws JAXBException {
         return consultarConversacion(usuarioA, usuarioB).stream()
                 .filter(mensaje -> mensaje.getEmisor() != null)
@@ -92,6 +134,14 @@ public class GestorChat {
                 ));
     }
 
+    /**
+     * Exporta los mensajes intercambiados entre dos usuarios al archivo {@code Conversación}.
+     *
+     * @param usuarioA primer usuario de la conversación
+     * @param usuarioB segundo usuario de la conversación
+     * @throws JAXBException si se produce un error al leer los mensajes
+     * @throws IOException si se produce un error al escribir el archivo
+     */
     public void exportarConversacion(String usuarioA, String usuarioB) throws JAXBException, IOException {
         List<Mensaje> conversacion = consultarConversacion(usuarioA, usuarioB);
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("Conversación", StandardCharsets.UTF_8))) {
@@ -103,6 +153,12 @@ public class GestorChat {
         }
     }
 
+    /**
+     * Convierte un mensaje en una línea legible con fecha, emisor y contenido.
+     *
+     * @param mensaje mensaje que se desea formatear
+     * @return representación textual del mensaje
+     */
     private String formatearMensaje(Mensaje mensaje) {
         String fecha = mensaje.getFecha();
         fecha = LocalDateTime.parse(fecha).format(FORMATO_FECHA);
